@@ -1,51 +1,1665 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <title>KFUPods Web Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-dark: #050815;
+      --bg-card: rgba(255,255,255,0.04);
+      --border-soft: rgba(255,255,255,0.08);
+      --tier-s: #ffd95c;
+      --tier-a: #3afc9a;
+      --tier-b: #3ac3ff;
+      --green: #26d962;
+    }
 
-<title>جاري تحويلك...</title>
-<style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-        background-color: #e0e0e0; /* لون رصاصي */
-        font-family: sans-serif;
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #1b3254, #02030b);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
     }
 
-    .box {
-        background: white;
-        padding: 30px 40px;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    /* ================== LOGIN ================== */
+
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #1b3254, #02030b);
+      z-index: 200;
     }
 
-    a.button {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 18px;
-        margin-top: 15px;
+    .login-card {
+      width: min(380px, 90%);
+      padding: 24px 22px 20px;
+      border-radius: 22px;
+      background: rgba(5, 8, 21, 0.95);
+      box-shadow: 0 26px 70px rgba(0,0,0,0.8);
+      border: 1px solid rgba(148,163,184,0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    a.button:hover {
-        background-color: #0056b3;
+    .login-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
-</style>
+
+    .login-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #4de1a1 45%, #005cff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(77,225,161,0.7);
+    }
+
+    .login-title {
+      font-weight: 800;
+      font-size: 19px;
+    }
+
+    .login-sub {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .login-label {
+      opacity: 0.75;
+    }
+
+    .login-input {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      font: inherit;
+    }
+
+    .login-input::placeholder {
+      color: rgba(148,163,184,0.7);
+    }
+
+    .login-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 4px;
+      border: none;
+      outline: none;
+      padding: 10px 0;
+      border-radius: 999px;
+      background: #20d45f;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(32,212,95,0.7);
+    }
+
+    .login-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 24px rgba(32,212,95,0.7);
+    }
+
+    /* ================== APP LAYOUT ================== */
+
+    .app {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+      display: none;          /* مخفي لين يلوّغن */
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #4de1a1 45%, #005cff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      box-shadow: 0 0 18px rgba(77,225,161,0.5);
+    }
+
+    .logo-text-main {
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      font-size: 18px;
+    }
+
+    .logo-text-sub {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .chip-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 999px;
+      padding: 4px;
+      align-self: center;
+    }
+
+    .tab {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0.65;
+    }
+
+    .tab.active {
+      background: rgba(255,255,255,0.12);
+      opacity: 1;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* ================== MAP VIEW ================== */
+
+    #mapView {
+      gap: 16px;
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .map-legend {
+      background: radial-gradient(circle at top, #050816, #020309);
+      border-radius: 20px;
+      padding: 14px;
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.65);
+    }
+
+    .legend-title {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .tier-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tier-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .tier-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .tier-dot.s { background: var(--tier-s); }
+    .tier-dot.a { background: var(--tier-a); }
+    .tier-dot.b { background: var(--tier-b); }
+
+    .tier-caption {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-left: 18px;
+    }
+
+    .map-wrapper {
+      position: relative;
+      background: radial-gradient(circle at top, #f5f7fb, #dde3f0);
+      border-radius: 999px;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      box-shadow: 0 26px 65px rgba(0,0,0,0.45);
+    }
+
+    .map-circle {
+      position: absolute;
+      inset: 6%;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #f4f4f9);
+      box-shadow: inset 0 0 0 14px rgba(185,199,219,0.7);
+    }
+
+    .map-road-v,
+    .map-road-h {
+      position: absolute;
+      background: #d1d9e9;
+      border-radius: 999px;
+    }
+
+    .map-road-v {
+      width: 5%;
+      height: 65%;
+      left: 50%;
+      top: 17%;
+      transform: translateX(-50%);
+    }
+
+    .map-road-h {
+      width: 65%;
+      height: 5%;
+      left: 17%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .map-green {
+      position: absolute;
+      background: #c6f2c9;
+      border-radius: 999px;
+      opacity: 0.7;
+      filter: blur(1px);
+    }
+
+    .map-green.one {
+      width: 48%;
+      height: 22%;
+      left: 28%;
+      top: 60%;
+    }
+
+    .map-green.two {
+      width: 30%;
+      height: 18%;
+      left: 26%;
+      top: 26%;
+    }
+
+    .map-building {
+      position: absolute;
+      min-width: 80px;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .map-building.s { background: var(--tier-s); }
+    .map-building.a { background: var(--tier-a); }
+    .map-building.b { background: var(--tier-b); }
+
+    .map-building .num {
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .map-building .name {
+      opacity: 0.9;
+      font-size: 10px;
+    }
+
+    .map-building .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #27d85f;
+      margin-left: auto;
+    }
+
+    .map-building.active {
+      outline: 2px solid rgba(0,0,0,0.3);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .map-badge-list {
+      position: absolute;
+      left: 1%;
+      top: 15%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 11px;
+      color: #444;
+    }
+
+    .map-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-badge-num {
+      font-weight: 700;
+      width: 20px;
+      text-align: right;
+    }
+
+    .map-badge-name {
+      opacity: 0.8;
+    }
+
+    /* ================== BOOKING MODAL ================== */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 50;
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: min(680px, 100%);
+      background: #050608;
+      border-radius: 26px 26px 0 0;
+      box-shadow: 0 -14px 45px rgba(0,0,0,0.7);
+      padding-bottom: 16px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-inner {
+      padding: 18px 20px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.25);
+      align-self: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fff, #4de1a1 45%, #005cff 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(77,225,161,0.6);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .modal-badge {
+      margin-left: auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 22px;
+      padding: 16px 18px 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pod-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .pod-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .pod-name {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .pod-building {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .pod-rate {
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .pod-rate span {
+      font-size: 11px;
+      opacity: 0.7;
+      display: block;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 6px;
+      gap: 12px;
+    }
+
+    .field-title {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .pod-select {
+      background: rgba(15,23,42,0.95);
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font: inherit;
+      min-width: 140px;
+    }
+
+    .slider-track {
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      margin: 8px 0 4px;
+      position: relative;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+      cursor: pointer;
+      margin-top: -7px;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .range-fill {
+      position: absolute;
+      height: 4px;
+      left: 0;
+      top: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3ac3ff, #22e17b);
+      pointer-events: none;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 10px;
+    }
+
+    .total-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .total-value {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .payment-section {
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255,255,255,0.15);
+      margin-top: 4px;
+    }
+
+    .payment-title {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .payment-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pay-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .pay-pill-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .pay-pill.active {
+      opacity: 1;
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    .modal-footer {
+      padding: 8px 18px 16px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 14px;
+      border-radius: 999px;
+      background: #20d45f;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(32,212,95,0.6);
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 20px rgba(32,212,95,0.5);
+    }
+
+    /* ================== SESSION VIEW ================== */
+
+    #sessionView {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .session-hero {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #111827, #020617);
+      min-height: 180px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .session-image {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.pexels.com/photos/6981119/pexels-photo-6981119.jpeg?auto=compress&cs=tinysrgb&w=1200');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.55;
+    }
+
+    .session-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    }
+
+    .session-content {
+      position: relative;
+      padding: 16px 18px 16px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .session-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .session-tier-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+    }
+
+    .session-title {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .session-subtitle {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .session-chip-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .session-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    .session-status-card {
+      width: 150px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .status-label {
+      opacity: 0.7;
+    }
+
+    .status-value {
+      font-weight: 600;
+    }
+
+    .power-btn {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ef4444;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 18px rgba(239,68,68,0.7);
+      cursor: pointer;
+    }
+
+    /* AC card */
+
+    .ac-card {
+      border-radius: 22px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 14px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ac-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .ac-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .ac-icon-cold {
+      color: #38bdf8;
+    }
+
+    .ac-icon-hot {
+      color: #f97316;
+      margin-left: auto;
+    }
+
+    /* alarm */
+
+    .alarm-card {
+      border-radius: 18px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 12px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .alarm-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .alarm-input {
+      background: rgba(15,23,42,0.9);
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: #e5e7eb;
+      padding: 6px 10px;
+      font: inherit;
+    }
+
+    .alarm-input::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
+
+    /* system control buttons */
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: rgba(148,163,184,0.95);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .sys-btn {
+      border-radius: 18px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      min-height: 88px;
+    }
+
+    .sys-btn-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .sys-btn.active {
+      border-color: #22c55e;
+      box-shadow: 0 0 18px rgba(34,197,94,0.4);
+    }
+
+    .sys-btn.active .sys-btn-icon-wrap {
+      background: radial-gradient(circle at 30% 20%, #fff, #22c55e);
+      color: #020617;
+    }
+
+    .sys-btn-label {
+      opacity: 0.9;
+    }
+
+    .sys-btn-sub {
+      font-size: 10px;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 900px) {
+      .map-layout {
+        grid-template-columns: 1fr;
+      }
+      .map-wrapper {
+        aspect-ratio: 1;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .top-actions {
+        align-self: flex-end;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="box">
-        <h2>جاري تحويلك الآن...</h2>
-        <p>إذا لم يتم تحويلك تلقائيًا خلال ثوانٍ، اضغط على الزر التالي:</p>
-        
-        <a class="button" href="Website/KFUPods.html">اضغط هنا للانتقال</a>
+<!-- LOGIN FIRST -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo">☾</div>
+      <div>
+        <div class="login-title">KFUPods</div>
+        <div class="login-sub">KFUPM Smart Nap Pods</div>
+      </div>
     </div>
+
+    <div class="login-field">
+      <div class="login-label">Student ID</div>
+      <input id="studentId" class="login-input" placeholder="e.g. 202012345" />
+    </div>
+
+    <div class="login-field">
+      <div class="login-label">OTP Code</div>
+      <input id="otpInput" class="login-input" value="1234" />
+    </div>
+
+    <div class="login-footer">
+      <span>Demo OTP: <b>1234</b></span>
+      <span>Single sign‑on (KFUPM)</span>
+    </div>
+
+    <button class="login-btn" id="loginBtn">Sign in</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="mainApp">
+  <header>
+    <div class="logo">
+      <div class="logo-badge">☾</div>
+      <div>
+        <div class="logo-text-main">KFUPods</div>
+        <div class="logo-text-sub">Smart Nap Pods · KFUPM Campus</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="chip">
+        <div class="chip-icon">👤</div>
+        <span id="studentChipLabel">Student Portal</span>
+      </div>
+      <div class="chip">
+        <div class="chip-icon">⚙️</div>
+        <span>Settings</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <div class="tab active" data-screen="mapView">Map</div>
+      <div class="tab" data-screen="sessionView">Active Pod</div>
+    </div>
+
+    <!-- MAP SCREEN -->
+    <section id="mapView" class="screen active">
+      <div class="map-layout">
+        <div class="map-legend">
+          <div class="legend-title">Class Filters</div>
+          <div class="tier-row">
+            <div>
+              <label class="tier-line">
+                <input type="checkbox" id="filter-s" checked />
+                <span class="tier-dot s"></span> S‑Class
+                <span style="opacity:0.7;">(Royal Suites)</span>
+              </label>
+              <div class="tier-caption">Faculty & staff luxury pods</div>
+            </div>
+            <div>
+              <label class="tier-line">
+                <input type="checkbox" id="filter-a" checked />
+                <span class="tier-dot a"></span> A‑Class
+                <span style="opacity:0.7;">(Comfort Pods)</span>
+              </label>
+              <div class="tier-caption">Student premium experience</div>
+            </div>
+            <div>
+              <label class="tier-line">
+                <input type="checkbox" id="filter-b" checked />
+                <span class="tier-dot b"></span> B‑Class
+                <span style="opacity:0.7;">(Eco Pods)</span>
+              </label>
+              <div class="tier-caption">Affordable study‑nap pods</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-wrapper">
+          <div class="map-circle"></div>
+          <div class="map-road-v"></div>
+          <div class="map-road-h"></div>
+          <div class="map-green one"></div>
+          <div class="map-green two"></div>
+
+          <div class="map-badge-list" id="badgeList"></div>
+          <div id="mapMarkers"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SESSION / SMART CONTROL SCREEN -->
+    <section id="sessionView" class="screen">
+      <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
+        <div class="session-hero">
+          <div class="session-image"></div>
+          <div class="session-gradient"></div>
+
+          <div class="power-btn" id="powerBtn" title="End Session">⏻</div>
+
+          <div class="session-content">
+            <div class="session-main">
+              <div class="session-tier-badge" id="sessionTierBadge">
+                S-Class · Royal Suite
+              </div>
+              <div class="session-title" id="sessionPodName">S68-2</div>
+              <div class="session-subtitle" id="sessionBuildingName">
+                Building 68 • Deanships
+              </div>
+
+              <div class="session-chip-row">
+                <div class="session-dot"></div>
+                <span>Session Active</span>
+              </div>
+            </div>
+
+            <div class="session-status-card">
+              <div class="status-row">
+                <span class="status-label">Remaining</span>
+                <span class="status-value" id="statusRemaining">59:59</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label">AC</span>
+                <span class="status-value" id="statusTemp">22°C</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label">Door</span>
+                <span class="status-value" id="statusDoor">Locked</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label">Lights</span>
+                <span class="status-value" id="statusLights">ON</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AC card -->
+        <div class="ac-card">
+          <div class="ac-header">
+            <span>AC Temperature</span>
+            <span id="acLabel">22°C</span>
+          </div>
+          <div class="ac-row">
+            <span class="ac-icon-cold">❄️</span>
+            <div class="slider-track">
+              <div class="range-fill" id="acFill"></div>
+              <input type="range" id="acSlider" min="16" max="28" step="1" value="22" />
+            </div>
+            <span class="ac-icon-hot">🔥</span>
+          </div>
+        </div>
+
+        <!-- Smart alarm -->
+        <div class="alarm-card">
+          <div class="alarm-row">
+            <div>
+              <div style="font-size:11px;opacity:0.7;">SMART ALARM</div>
+              <div style="font-size:13px;">Wake me up at</div>
+            </div>
+            <label style="font-size:12px;display:flex;align-items:center;gap:6px;">
+              <input type="checkbox" id="alarmToggle" checked />
+              <span>Enabled</span>
+            </label>
+          </div>
+          <div class="alarm-row" style="margin-top:6px;">
+            <input
+              id="alarmTime"
+              type="time"
+              class="alarm-input"
+              value="07:45"
+            />
+            <div style="font-size:11px;opacity:0.65;">
+              Before next class<br />+ gentle wake
+            </div>
+          </div>
+        </div>
+
+        <!-- System control -->
+        <div>
+          <div class="section-title">SYSTEM CONTROL</div>
+          <div class="grid" id="sysGrid"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="overlay" id="bookingOverlay">
+  <div class="modal">
+    <div class="modal-inner">
+      <div class="modal-handle"></div>
+
+      <div class="modal-header">
+        <div class="modal-logo">☾</div>
+        <div>
+          <div class="modal-title">KFUPods Booking</div>
+          <div class="modal-subtitle" id="bookingTierLine">
+            S-Class (Royal Suite)
+          </div>
+        </div>
+        <div class="modal-badge" id="bookingTierBadge">
+          <span>🛏</span><span>S-Class</span>
+        </div>
+      </div>
+
+      <div class="modal-card">
+        <div class="pod-line">
+          <div class="pod-main">
+            <div class="pod-name" id="bookingPodName">S68-2</div>
+            <div class="pod-building" id="bookingBuildingLine">
+              Building 68 • Deanships
+            </div>
+          </div>
+          <div class="pod-rate">
+            <span id="bookingRate">20.99 SAR</span>
+            <span>/hour</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-title">Pod</div>
+          <select id="podSelect" class="pod-select"></select>
+        </div>
+
+        <div class="field-row">
+          <div class="field-title">Duration</div>
+          <div id="durationLabel">1 Hour</div>
+        </div>
+        <div class="ac-row" style="margin-top:4px;">
+          <span style="font-size:13px;">⏱</span>
+          <div class="slider-track">
+            <div class="range-fill" id="durationFill"></div>
+            <input
+              type="range"
+              id="durationSlider"
+              min="1"
+              max="5"
+              step="1"
+              value="1"
+            />
+          </div>
+        </div>
+
+        <div class="total-row">
+          <div class="total-label">Total</div>
+          <div class="total-value" id="totalLabel">20.99 SAR</div>
+        </div>
+
+        <div class="payment-section">
+          <div class="payment-title">Payment Method</div>
+          <div class="payment-row" id="paymentRow"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="primary-btn" id="confirmPayBtn">
+        CONFIRM &amp; PAY
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- DATA ----------
+
+  const buildings = [
+    { id: "75", number: "75", name: "Aerospace Eng.", tier: "s", x: 38, y: 20 },
+    { id: "4",  number: "4",  name: "Chemistry Eng.", tier: "a", x: 36, y: 32 },
+    { id: "68", number: "68", name: "Deanships", tier: "s", x: 50, y: 30 },
+    { id: "57", number: "57", name: "Preparatory Year", tier: "b", x: 70, y: 30 },
+    { id: "17", number: "17", name: "Faculty Housing", tier: "s", x: 32, y: 45 },
+    { id: "9",  number: "9",  name: "Faculty (QAF)", tier: "b", x: 44, y: 46 },
+    { id: "8",  number: "8",  name: "Main Library", tier: "b", x: 50, y: 52 },
+    { id: "21", number: "21", name: "Admin Tower", tier: "s", x: 44, y: 58 },
+    { id: "22", number: "22", name: "Science", tier: "b", x: 50, y: 68 },
+    { id: "24", number: "24", name: "Business School", tier: "b", x: 43, y: 76 },
+    { id: "76", number: "76", name: "Petroleum Coll.", tier: "a", x: 60, y: 78 }
+  ];
+
+  const podPrices = {
+    s: 20.99,
+    a: 15.99,
+    b: 7.99
+  };
+
+  const paymentMethods = [
+    { id: "applePay",    label: "Apple Pay",    icon: "" },
+    { id: "stcPay",      label: "stc pay",      icon: "💳" },
+    { id: "kfupmWallet", label: "KFUPM Wallet", icon: "🏛" },
+    { id: "paypal",      label: "PayPal",       icon: "P" }
+  ];
+
+  let activeBuildingId = null;
+  let bookingTier = "s";
+  let bookingPodName = "S68-2";
+  let durationHours = 1;
+  let selectedPayment = "applePay";
+  let currentUserId = null;
+
+  // ---------- UTIL ----------
+
+  function formatPrice(value) {
+    return value.toFixed(2) + " SAR";
+  }
+
+  function tierLabel(tier) {
+    if (tier === "s") return "S-Class (Royal Suite)";
+    if (tier === "a") return "A-Class (Comfort Pods)";
+    return "B-Class (Eco Pods)";
+  }
+
+  function tierShort(tier) {
+    if (tier === "s") return "S-Class";
+    if (tier === "a") return "A-Class";
+    return "B-Class";
+  }
+
+  function podsFor(building) {
+    let prefix, count;
+    if (building.tier === "s") { prefix = "S"; count = 5; }
+    else if (building.tier === "a") { prefix = "A"; count = 4; }
+    else { prefix = "B"; count = 8; }
+
+    const pods = [];
+    for (let i = 1; i <= count; i++) {
+      pods.push(`${prefix}${building.number}-${i}`);
+    }
+    return pods;
+  }
+
+  // ---------- TABS ----------
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const screenId = tab.dataset.screen;
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(screenId).classList.add("active");
+    });
+  });
+
+  // ---------- MAP & BADGES ----------
+
+  const markersContainer = document.getElementById("mapMarkers");
+  const badgeList = document.getElementById("badgeList");
+
+  function renderBadges() {
+    badgeList.innerHTML = "";
+    buildings
+      .slice()
+      .sort((a, b) => parseInt(a.number) - parseInt(b.number))
+      .forEach(b => {
+        const line = document.createElement("div");
+        line.className = "map-badge";
+        line.innerHTML = `<span class="map-badge-num">${b.number}</span>
+                          <span class="map-badge-name">${b.name}</span>`;
+        badgeList.appendChild(line);
+      });
+  }
+
+  function renderMarkers() {
+    markersContainer.innerHTML = "";
+    const showS = document.getElementById("filter-s").checked;
+    const showA = document.getElementById("filter-a").checked;
+    const showB = document.getElementById("filter-b").checked;
+
+    buildings.forEach(b => {
+      if ((b.tier === "s" && !showS) ||
+          (b.tier === "a" && !showA) ||
+          (b.tier === "b" && !showB)) return;
+
+      const div = document.createElement("div");
+      div.className = `map-building ${b.tier}`;
+      if (b.id === activeBuildingId) div.classList.add("active");
+      div.style.left = `${b.x}%`;
+      div.style.top = `${b.y}%`;
+      div.style.transform = "translate(-50%, -50%)";
+
+      div.innerHTML = `
+        <div class="num">${b.number}</div>
+        <div class="name">${b.name}</div>
+        <div class="status-dot"></div>
+      `;
+
+      div.addEventListener("click", () => {
+        activeBuildingId = b.id;
+        renderMarkers();
+        openBooking(b);
+      });
+
+      markersContainer.appendChild(div);
+    });
+  }
+
+  document.getElementById("filter-s").addEventListener("change", renderMarkers);
+  document.getElementById("filter-a").addEventListener("change", renderMarkers);
+  document.getElementById("filter-b").addEventListener("change", renderMarkers);
+
+  // ---------- BOOKING MODAL ----------
+
+  const overlay = document.getElementById("bookingOverlay");
+  const durationSlider = document.getElementById("durationSlider");
+  const durationFill = document.getElementById("durationFill");
+  const podSelect = document.getElementById("podSelect");
+
+  function updateDurationUI() {
+    durationHours = parseInt(durationSlider.value, 10);
+    document.getElementById("durationLabel").textContent =
+      durationHours + (durationHours === 1 ? " Hour" : " Hours");
+
+    const percent = ((durationHours - 1) / 4) * 100;
+    durationFill.style.width = percent + "%";
+
+    const rate = podPrices[bookingTier];
+    const total = rate * durationHours;
+    document.getElementById("totalLabel").textContent = formatPrice(total);
+  }
+
+  durationSlider.addEventListener("input", updateDurationUI);
+
+  podSelect.addEventListener("change", () => {
+    bookingPodName = podSelect.value;
+    document.getElementById("bookingPodName").textContent = bookingPodName;
+  });
+
+  function renderPaymentPills() {
+    const row = document.getElementById("paymentRow");
+    row.innerHTML = "";
+    paymentMethods.forEach(m => {
+      const pill = document.createElement("div");
+      pill.className = "pay-pill" + (m.id === selectedPayment ? " active" : "");
+      pill.dataset.id = m.id;
+      pill.innerHTML = `<div class="pay-pill-icon">${m.icon}</div>${m.label}`;
+      pill.addEventListener("click", () => {
+        selectedPayment = m.id;
+        renderPaymentPills();
+      });
+      row.appendChild(pill);
+    });
+  }
+
+  function openBooking(building) {
+    bookingTier = building.tier;
+
+    const pods = podsFor(building);
+    podSelect.innerHTML = "";
+    pods.forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      podSelect.appendChild(opt);
+    });
+
+    bookingPodName = pods[0];
+
+    document.getElementById("bookingPodName").textContent = bookingPodName;
+    document.getElementById("bookingBuildingLine").textContent =
+      `Building ${building.number} • ${building.name}`;
+    document.getElementById("bookingRate").textContent =
+      formatPrice(podPrices[bookingTier]);
+    document.getElementById("bookingTierLine").textContent = tierLabel(bookingTier);
+    document.getElementById("bookingTierBadge").innerHTML =
+      `<span>🛏</span><span>${tierShort(bookingTier)}</span>`;
+
+    durationSlider.value = "1";
+    updateDurationUI();
+    renderPaymentPills();
+
+    overlay.classList.add("visible");
+  }
+
+  overlay.addEventListener("click", e => {
+    if (e.target === overlay) {
+      overlay.classList.remove("visible");
+    }
+  });
+
+  document.getElementById("confirmPayBtn").addEventListener("click", () => {
+    overlay.classList.remove("visible");
+    startSessionFromBooking();
+    document.querySelector('.tab[data-screen="sessionView"]').click();
+  });
+
+  // ---------- SESSION / SMART CONTROL ----------
+
+  const acSlider = document.getElementById("acSlider");
+  const acFill = document.getElementById("acFill");
+
+  function updateACUI() {
+    const value = parseInt(acSlider.value, 10);
+    document.getElementById("acLabel").textContent = value + "°C";
+    document.getElementById("statusTemp").textContent = value + "°C";
+    const percent = ((value - 16) / 12) * 100;
+    acFill.style.width = percent + "%";
+  }
+
+  acSlider.addEventListener("input", updateACUI);
+
+  const sysButtons = [
+    { id: "lights",   label: "Lights",        icon: "💡", sub: "Main cabin" },
+    { id: "door",     label: "Door Lock",     icon: "🚪", sub: "Smart lock" },
+    { id: "privacy",  label: "Privacy Glass", icon: "🕶", sub: "Frosted" },
+    { id: "tvVol",    label: "TV Volume",     icon: "🔊", sub: "Mute / 70%" },
+    { id: "brightness", label: "Brightness",  icon: "🔆", sub: "0% / 100%" },
+    { id: "rgb",      label: "RGB Color",     icon: "🎨", sub: "Cycle colors" },
+    { id: "noise",    label: "Noise Cancel",  icon: "🛡", sub: "Isolation" },
+    { id: "massage",  label: "Massage",       icon: "💆‍♂️", sub: "Level 0" },
+    { id: "tv",       label: "TV / Screen",   icon: "📺", sub: "On / Off" }
+  ];
+
+  const sysStates = {
+    lights: true,
+    door: true,
+    privacy: false,
+    tvVol: true,
+    brightness: true,
+    rgb: false,
+    noise: false,
+    massageLevel: 0,
+    tv: false
+  };
+
+  function renderSysButtons() {
+    const grid = document.getElementById("sysGrid");
+    grid.innerHTML = "";
+    sysButtons.forEach(btn => {
+      const active =
+        btn.id === "massage"
+          ? sysStates.massageLevel > 0
+          : sysStates[btn.id];
+
+      const div = document.createElement("div");
+      div.className = "sys-btn" + (active ? " active" : "");
+      let sub = btn.sub;
+
+      if (btn.id === "massage") {
+        sub = "Level " + sysStates.massageLevel;
+      }
+
+      div.innerHTML = `
+        <div class="sys-btn-icon-wrap">${btn.icon}</div>
+        <div class="sys-btn-label">${btn.label}</div>
+        <div class="sys-btn-sub">${sub}</div>
+      `;
+
+      div.addEventListener("click", () => {
+        if (btn.id === "massage") {
+          sysStates.massageLevel = (sysStates.massageLevel + 1) % 4; // 0-3
+        } else {
+          sysStates[btn.id] = !sysStates[btn.id];
+        }
+        syncHeaderFromSys();
+        renderSysButtons();
+      });
+
+      grid.appendChild(div);
+    });
+  }
+
+  function syncHeaderFromSys() {
+    document.getElementById("statusDoor").textContent =
+      sysStates.door ? "Locked" : "Open";
+    document.getElementById("statusLights").textContent =
+      sysStates.lights ? "ON" : "OFF";
+  }
+
+  let remainingSeconds = 60 * 60;
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+
+  function tickTimer() {
+    remainingSeconds = Math.max(0, remainingSeconds - 1);
+    document.getElementById("statusRemaining").textContent =
+      formatTime(remainingSeconds);
+  }
+  setInterval(tickTimer, 1000);
+
+  document.getElementById("alarmToggle").addEventListener("change", e => {
+    if (e.target.checked) {
+      console.log("Alarm ON at", document.getElementById("alarmTime").value);
+    } else {
+      console.log("Alarm OFF");
+    }
+  });
+
+  document.getElementById("powerBtn").addEventListener("click", () => {
+    if (confirm("End current session?")) {
+      remainingSeconds = 0;
+      alert("Session Ended 👋");
+    }
+  });
+
+  function startSessionFromBooking() {
+    const building = buildings.find(b => b.id === activeBuildingId) || buildings[2];
+    const tier = bookingTier;
+
+    document.getElementById("sessionPodName").textContent = bookingPodName;
+    document.getElementById("sessionBuildingName").textContent =
+      `Building ${building.number} • ${building.name}`;
+    document.getElementById("sessionTierBadge").textContent = tierLabel(tier);
+
+    remainingSeconds = durationHours * 60 * 60;
+  }
+
+  // ---------- LOGIN ----------
+
+  const loginScreen = document.getElementById("loginScreen");
+  const mainApp = document.getElementById("mainApp");
+  const loginBtn = document.getElementById("loginBtn");
+  const studentIdInput = document.getElementById("studentId");
+  const otpInput = document.getElementById("otpInput");
+  const studentChipLabel = document.getElementById("studentChipLabel");
+
+  function tryLogin() {
+    const id = studentIdInput.value.trim();
+    const otp = otpInput.value.trim();
+
+    if (!id) {
+      alert("Please enter your student ID.");
+      return;
+    }
+    if (otp !== "1234") {
+      alert("Wrong OTP (use 1234 for demo).");
+      return;
+    }
+
+    currentUserId = id;
+    studentChipLabel.textContent = "ID: " + currentUserId;
+
+    loginScreen.style.display = "none";
+    mainApp.style.display = "flex";
+  }
+
+  loginBtn.addEventListener("click", tryLogin);
+
+  [studentIdInput, otpInput].forEach(input => {
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") tryLogin();
+    });
+  });
+
+  // ---------- INIT ----------
+
+  renderBadges();
+  renderMarkers();
+  renderSysButtons();
+  updateACUI();
+  renderPaymentPills();
+  updateDurationUI();
+  syncHeaderFromSys();
+</script>
 </body>
 </html>
