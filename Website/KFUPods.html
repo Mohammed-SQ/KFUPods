@@ -197,7 +197,7 @@
 
     /* Map UI Overlay – fixed title at the very top */
     .map-header {
-        position: fixed;      /* <— stays at top while scrolling */
+        position: fixed;      /* stays at top while scrolling */
         top: 10px;
         left: 0;
         width: 100%;
@@ -256,6 +256,8 @@
         display: flex;
         align-items: flex-end;
         padding: 20px;
+        background-size: cover;
+        background-position: center;
     }
     .sheet-content {
         flex: 1;
@@ -299,8 +301,9 @@
         margin: 20px;
         height: 280px;
         border-radius: 26px;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), url('https://via.placeholder.com/400x300/1a1a1a/333333?text=KFUPM+Building');
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)); /* actual image set in JS */
         background-size: cover;
+        background-position: center;
         position: relative;
         border: 1px solid rgba(255,255,255,0.1);
         display: flex;
@@ -406,10 +409,10 @@
                 </div>
             </div>
             <div class="sheet-content" id="b-sheet-pods">
-                </div>
+            </div>
         </div>
 
-        <div id="payment-sheet" class="sheet-modal" style="height: 70%; z-index: 60;">
+        <div id="payment-sheet" class="sheet-modal" style="height: 70%; z-index: 60%;">
             <div class="sheet-content">
                 <div style="width:40px; height:4px; background:#444; margin: 0 auto 20px; border-radius:2px;"></div>
                 <h2 style="color: white; margin-bottom: 5px;">Confirm Booking</h2>
@@ -445,11 +448,11 @@
         </div>
 
         <div id="smart-control-view" class="screen hidden">
-            <div class="hero-header">
+            <div class="hero-header" id="session-hero">
                 <div style="position: absolute; top: 20px; left: 20px;">
                     <span id="session-tier-badge" style="background: rgba(255,215,0,0.3); padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight:bold;">S-Class</span>
                     <h1 id="session-pod-name" style="font-size: 28px;">S21-1</h1>
-                    <p id="session-building" style="font-size: 12px; opacity: 0.8;">Adminstration</p>
+                    <p id="session-building" style="font-size: 12px; opacity: 0.8;">Administration</p>
                 </div>
 
                 <div class="timer-badge">
@@ -651,6 +654,14 @@
                 this.state.selectedBuilding = building;
                 document.getElementById('b-sheet-num').innerText = "Building " + building.num;
                 document.getElementById('b-sheet-name').innerText = building.name;
+
+                // Set header background image based on building id
+                const header = document.getElementById('b-sheet-header');
+                header.style.backgroundImage =
+                    `linear-gradient(to bottom, rgba(0,0,0,0.25), #0b0b10),
+                     url('images/b${building.id}.jpeg')`;
+                header.style.backgroundSize = 'cover';
+                header.style.backgroundPosition = 'center';
                 
                 // Generate Pods Logic
                 const podContainer = document.getElementById('b-sheet-pods');
@@ -741,6 +752,14 @@
                 document.getElementById('session-tier-badge').style.backgroundColor = colors[this.state.selectedPod.tier] + '66';
                 document.getElementById('session-building').innerText = this.state.selectedBuilding.name;
 
+                // Set hero image based on building id
+                const hero = document.getElementById('session-hero');
+                hero.style.backgroundImage =
+                    `linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)),
+                     url('images/b${this.state.selectedBuilding.id}.jpeg')`;
+                hero.style.backgroundSize = 'cover';
+                hero.style.backgroundPosition = 'center';
+
                 // Timer Logic
                 this.state.remainingTime = this.state.duration * 3600; // seconds
                 this.updateTimerDisplay();
@@ -754,7 +773,7 @@
                     if(this.state.remainingTime <= 0) {
                         this.endSession();
                     }
-                }, 1000); // 1 sec fast forward for demo? No, let's keep it real.
+                }, 1000);
             },
 
             updateTimerDisplay: function() {
@@ -769,7 +788,7 @@
                 btn.classList.toggle('active');
                 
                 if(btnId === 'btn-door') {
-                   const locked = btn.classList.contains('active'); // active means locked in Swift code
+                   const locked = btn.classList.contains('active'); // active means locked
                    document.getElementById('door-status').innerHTML = locked ? 
                        '<i class="fa-solid fa-lock" style="color:lime"></i> Locked' : 
                        '<i class="fa-solid fa-lock-open" style="color:red"></i> Unlocked';
