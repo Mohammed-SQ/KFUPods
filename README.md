@@ -3,6 +3,8 @@
 This project was created by **Mohammed Alluqman** as part of the **BUS200** course.  
 It includes both a **mobile application** and a **web prototype** for the KFUPods concept.
 
+<img width="1024" height="500" alt="image" src="https://github.com/user-attachments/assets/c5ad693c-aafb-489d-9f72-09087a16b8f6" />
+
 ## Project Members
 
 The following students collaborated on this project:
